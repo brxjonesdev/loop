@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Loop
 
-## Getting Started
+Loop is a collaborative travel and event planning app that helps groups stay organized and connected. With features like real-time updates, collaborative lists, budgeting tools, and interactive itineraries, Loop makes planning seamless and fun. Whether you're coordinating a vacation or a day trip, Loop keeps everyone in the loop.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Itinerary Management**: Create detailed schedules with dates, times, and locations.
+- **Real-Time Collaboration**: Work together on plans and receive instant updates.
+- **Budget Tracking**: Manage expenses and allocate funds for the trip.
+- **Voting and Polls**: Decide on accommodations, destinations, and activities as a group.
+- **Location-Based Recommendations**: Discover tailored suggestions for stops and activities.
+- **Customizable Maps**: Visualize all your planned locations.
+- **Reservation Storage**: Save tickets, bookings, and other key documents.
+- **Collaborative Lists**: Plan packing lists, checklists, and tasks together.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **NextJS**: Frontend framework.
+- **Tailwind CSS**: For streamlined styling.
+- **TypeScript**: For type-safe, scalable code.
+- **Prisma**: Database ORM.
+- **Neon**: Cloud Postgres database.
+- **Kinde**: Authentication and user management.
+- **Sentry**: Error tracking.
+- **Mintlify**: Documentation platform.
+- **Motion**: Smooth animations.
+- **Accessibility Tools**: For an inclusive design.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

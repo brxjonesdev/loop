@@ -59,34 +59,36 @@ export default async function LandingBlog() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {latestPosts
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 3)
-          .map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="flex flex-col gap-2 hover:opacity-75 cursor-pointer group"
-            >
+            .sort(
+              (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+            )
+            .slice(0, 3)
+            .map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="flex flex-col gap-2 hover:opacity-75 cursor-pointer group"
+              >
                 <Card className="w-full  overflow-ellipsis">
-                <CardHeader>
-                  <CardTitle className="text-md tracking-tight">
-                  {post.title}
-                  </CardTitle>
-                  <CardDescription className="text-muted-foreground text-sm overflow-ellipsis max-h-[100px]">
-                  {post.description}
-                  </CardDescription>
-                </CardHeader>
+                  <CardHeader>
+                    <CardTitle className="text-md tracking-tight">
+                      {post.title}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground text-sm overflow-ellipsis max-h-[100px]">
+                      {post.description}
+                    </CardDescription>
+                  </CardHeader>
 
-                <CardFooter className="text-sm">
-                  {new Date(post.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  })}
-                </CardFooter>
+                  <CardFooter className="text-sm">
+                    {new Date(post.date).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </CardFooter>
                 </Card>
-            </Link>
-          ))}
+              </Link>
+            ))}
         </div>
       </div>
     </div>

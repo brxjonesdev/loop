@@ -61,7 +61,7 @@ export default async function BlogIndex() {
               href={`/blog/${post.slug}`}
               className="block group"
             >
-              <Card className='hover:bg-black/5'>
+              <Card className='hover:bg-black/5 w-fit'>
                 <CardHeader>
                   <CardTitle>{post.title}</CardTitle>
                   <CardDescription>{post.description}</CardDescription>

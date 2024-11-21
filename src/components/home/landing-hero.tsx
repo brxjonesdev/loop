@@ -26,7 +26,7 @@ export default function LandingHero() {
             </p>
           </div>
           <div className="flex flex-row gap-4">
-            <Link href="/" className={buttonVariants({ variant: 'outline' })}>
+            <Link href="https://github.com/brxjonesdev/loop/tree/master" className={buttonVariants({ variant: 'outline' })}>
               View Progress On Github
             </Link>
 

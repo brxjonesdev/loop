@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { createClient } from '@/utils/supabase/server';
+import Link from 'next/link';
 
 export default async function UserInfo() {
   const supabase = await createClient();
@@ -21,15 +22,17 @@ export default async function UserInfo() {
     return null;
   }
   return (
-    <Card className="flex items-center p-2 gap-4 shadow-none">
+    <Card className="flex items-center py-0.5 px-4 gap-4 shadow-none border-none">
       <Avatar>
         <AvatarImage src={user.user_metadata.avatar_url} />
         <AvatarFallback>CN</AvatarFallback>
       </Avatar>
 
-      <CardHeader className="p-0">
+      <CardHeader className="p-0 space-y-1 text-sm">
         <CardTitle>{user.user_metadata.full_name}</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+        <CardDescription className="text-xs">
+          <Link href="/home/profile">Settings</Link>
+        </CardDescription>
       </CardHeader>
     </Card>
   );

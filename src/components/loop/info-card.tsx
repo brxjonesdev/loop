@@ -8,18 +8,31 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-export default function InfoCard() {
+export default function InfoCard({ loopName }: { loopName: string }) {
   return (
-    <Card className="w-full max-w-lg">
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
+    <Card className="w-full lg:max-w-lg flex flex-col font-sans">
+      <CardHeader className="min-h-52  bg-gray-200 rounded-t-xl"></CardHeader>
+      <CardContent className="flex-1 pt-4 pb-2">
+        <CardTitle className="lg:text-3xl">{loopName}</CardTitle>
+        <CardDescription className="font-mono">
+          {' '}
+          9/12-2024 - 12/20/2024
+        </CardDescription>
       </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
+      <CardFooter className="font-mono flex justify-between w-full gap-4">
+        {/* <div>
+        <p className='text-sm'>
+          Irene proposed we go to <span className='text-cyan-400'>Cafe Loop</span>.
+        </p>
+        <p className='text-xs'>
+          5 minutes ago
+        </p>
+        </div> */}
+        <div className="flex -space-x-3 justify-self-end">
+          <div className="h-10 w-10 bg-black/20 rounded-full border-2 border-white"></div>
+          <div className="h-10 w-10 bg-blue-300 rounded-full border-2 border-white"></div>
+          <div className="h-10 w-10 bg-red-300 rounded-full border-2 border-white"></div>
+        </div>
       </CardFooter>
     </Card>
   );

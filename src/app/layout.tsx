@@ -20,9 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} antialiased flex flex-col h-dvh`}
+      >
         <Header />
         {children}
+        <div className="w-full py-3 bg-foreground text-background rounded-t-md" />
       </body>
     </html>
   );

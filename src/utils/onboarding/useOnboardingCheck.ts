@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 
 export const useOnboardingCheck = () => {
   const supabase = createClient();
@@ -45,7 +45,7 @@ export const useOnboardingCheck = () => {
       }
 
       console.log('Profile checked/created successfully');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
       console.error('Error adding profile:', err.message);

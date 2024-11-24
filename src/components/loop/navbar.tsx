@@ -23,7 +23,7 @@ export default function MainNav() {
   const pathname = usePathname();
   console.log(pathname);
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-start">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="md:hidden">
@@ -46,7 +46,7 @@ export default function MainNav() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuTrigger>Attachments</NavigationMenuTrigger>
-            <NavigationMenuContent>
+            <NavigationMenuContent >
               <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                 <li className="row-span-3">
                   <NavigationMenuLink asChild>
@@ -131,13 +131,7 @@ export default function MainNav() {
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem>
-            <Link href="/notes" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Notes
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
+        
           <NavigationMenuItem>
             <Link href="/budget" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>

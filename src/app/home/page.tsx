@@ -28,7 +28,7 @@ export default async function Homepage() {
   const { data: loops, error: loopError } = await supabase
     .from('loops')
     .select('*')
-    .eq('user_id', user.id);
+    .eq('owner_id', user.id);
   if (loopError) {
     console.error("Error fetching user's loops:", loopError.message);
   }

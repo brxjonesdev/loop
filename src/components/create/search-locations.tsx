@@ -14,6 +14,7 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
 interface SearchResult {
   display_name: string;
@@ -21,15 +22,21 @@ interface SearchResult {
   lon: string;
   place_id: number;
   name: string;
+  type: string;
+  address: {
+    postcode?: string; // Include postcode (ZIP code) in the address object
+    city?: string;
+    state?: string;
+    country?: string;
+  };
 }
 
 export default function LocationSearch({
-  search,
-  setSearch,
+  setLocation,
 }: {
-  search: string;
-  setSearch: (search: string) => void;
+  setLocation: (location: Record<string, string>) => void;
 }) {
+  const [search, setSearch] = React.useState('');
   const [results, setResults] = React.useState<SearchResult[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [isResultsVisible, setIsResultsVisible] = React.useState(false);
@@ -48,7 +55,7 @@ export default function LocationSearch({
         const params = new URLSearchParams({
           q: debouncedSearch,
           format: 'json',
-          limit: '5',
+          limit: '5', // Limit the number of results
         });
 
         const response = await fetch(
@@ -64,7 +71,16 @@ export default function LocationSearch({
 
         const data = await response.json();
         console.log('Fetched locations:', data);
-        setResults(data);
+
+        // Deduplicate by creating a unique key from the name, lat, lon combination
+        const uniqueResults: Record<string, SearchResult> = {};
+        data.forEach((result: SearchResult) => {
+          const uniqueKey = `${result.name}-${result.lat}-${result.lon}`;
+          uniqueResults[uniqueKey] = result;
+        });
+
+        // Convert the object back to an array
+        setResults(Object.values(uniqueResults));
       } catch (error) {
         console.error('Error fetching locations:', error);
         setResults([]);
@@ -93,15 +109,35 @@ export default function LocationSearch({
   }, []);
 
   const handleLocationClick = (result: SearchResult) => {
+    // Log the location object
+    console.log('Location clicked:', result);
+
     const formattedLocation = {
       lat: result.lat,
       lon: result.lon,
       full_name: result.display_name,
       name: result.name,
+      postcode: result.address?.postcode, // Include postcode (ZIP code) if available
     };
+
+    // Display the formatted location
     console.log('Formatted location:', formattedLocation);
     setSearch(formattedLocation.name);
+    setLocation(formattedLocation.name);
     setIsResultsVisible(false);
+  };
+
+  const getPlaceTypeBadge = (type: string) => {
+    switch (type) {
+      case 'city':
+        return <Badge variant="outline">City</Badge>;
+      case 'county':
+        return <Badge variant="outline">County</Badge>;
+      case 'state':
+        return <Badge variant="outline">State</Badge>;
+      default:
+        return <Badge variant="outline">Unknown</Badge>;
+    }
   };
 
   return (
@@ -156,6 +192,14 @@ export default function LocationSearch({
                         <CardDescription className="text-xs truncate w-full">
                           {result.display_name}
                         </CardDescription>
+                        <div className="mt-1">
+                          {getPlaceTypeBadge(result.type)}
+                          {result.address?.postcode && (
+                            <Badge variant="outline" className="ml-2">
+                              {result.address?.postcode}
+                            </Badge>
+                          )}
+                        </div>
                       </Button>
                     ))}
                   </div>

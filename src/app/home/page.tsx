@@ -1,10 +1,9 @@
 import React from 'react';
 import { createClient } from '@/utils/supabase/server';
-import OnboardingCheck from '@/components/home/onboarding';
+import OnboardingCheck from './components/onboarding';
 import { redirect } from 'next/navigation';
-import RecentLoops from '@/components/home/recent-loops';
-import LocalRecommendations from '@/components/home/local-recommendations';
-import LiveUpdatesBrief from '@/components/home/live-updates-brief';
+import RecentLoops from './components/recent-loops';
+import LiveUpdatesBrief from './components/live-updates-brief';
 
 export default async function Homepage() {
   const supabase = await createClient();
@@ -34,12 +33,9 @@ export default async function Homepage() {
   }
 
   return (
-    <section className="flex-1 flex flex-col gap-12 w-full bg-background  font-sans container pt-8 pb-12 mx-auto ">
+    <section className="flex-1 gap-10 w-full bg-background font-sans container pt-8 pb-12 mx-auto grid grid-cols-1 xl:grid-cols-[.5fr,1fr]  lg:px-8">
+      <LiveUpdatesBrief />
       <RecentLoops loops={loops} />
-      <div className="lg:flex gap-4 space-y-12 lg:space-y-0">
-        <LiveUpdatesBrief />
-        <LocalRecommendations />
-      </div>
     </section>
   );
 }

@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${spaceGrotesk.variable} antialiased flex flex-col h-dvh`}
+        className={`${spaceGrotesk.variable} antialiased h-dvh flex flex-col `}
       >
         <Header />
         {children}

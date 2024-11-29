@@ -34,7 +34,7 @@ interface SearchResult {
 export default function LocationSearch({
   setLocation,
 }: {
-  setLocation: (location: Record<string, string>) => void;
+  setLocation: (location: string | null) => void;
 }) {
   const [search, setSearch] = React.useState('');
   const [results, setResults] = React.useState<SearchResult[]>([]);

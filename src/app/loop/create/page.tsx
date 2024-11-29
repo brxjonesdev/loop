@@ -1,8 +1,8 @@
 'use client';
-import { DateRangePicker } from '@/components/create/dates';
-import LoopStatusToggle from '@/components/create/loop-status-toggle';
-import LocationSearch from '@/components/create/search-locations';
-import UsernameSearch from '@/components/create/username-search';
+import { DateRangePicker } from '@/app/loop/create/components/dates';
+import LoopStatusToggle from '@/app/loop/create/components/loop-status-toggle';
+import LocationSearch from '@/app/loop/create/components/search-locations';
+import UsernameSearch from '@/app/loop/create/components/username-search';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { DateRange } from 'react-day-picker';
@@ -10,15 +10,21 @@ import { set } from 'date-fns';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { nanoid } from 'nanoid';
+import AvatarLoopLoading from '@/app/loop/create/components/creating-animation';
 
 export default function CreateLoopPage() {
   const supabase = createClient();
   const router = useRouter();
   const [isPrivate, setIsPrivate] = React.useState(false);
-  const [locationError, setLocationError] = React.useState(null);
-  const [location, setLocation] = React.useState(null);
+  const [locationError, setLocationError] = React.useState<string | null>(null);
+  const [location, setLocation] = React.useState<string | null>(null);
   const [date, setDate] = React.useState<DateRange | undefined>(undefined);
   const [loopInitStep, setLoopInitStep] = React.useState('');
+  const [isCreatingLoop, setIsCreatingLoop] = React.useState({
+    inProgress: false,
+    percentage: 0,
+    currentAction: 'Creating Loop...',
+  });
   const [selectedUsers, setSelectedUsers] = React.useState<
     {
       id: number;
@@ -36,29 +42,38 @@ export default function CreateLoopPage() {
   }, [location]);
 
   const handleCreateLoop = async () => {
-    console.log('Creating loop with:', {
-      location,
-      date,
-      isPrivate,
-      selectedUsers,
-    });
+    if (!location) {
+      setLocationError('Please select a location');
+      return;
+    }
+
+    setIsCreatingLoop((prevState) => ({
+      ...prevState,
+      inProgress: true,
+      currentAction: 'Starting loop creation...',
+      percentage: 10,
+    }));
 
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser();
     if (userError) {
-      setLoopInitStep('Failed to fetch user');
+      setIsCreatingLoop((prevState) => ({
+        ...prevState,
+        currentAction: 'Failed to get your user profile',
+      }));
       return;
     }
 
-    if (!location) {
-      setLocationError('Please select a location');
-      return;
-    }
+    setIsCreatingLoop((prevState) => ({
+      ...prevState,
+      currentAction: 'Got your user profile! Creating loop...',
+      percentage: 30,
+    }));
 
     const fetchImage = async (location: string) => {
-      const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY; // Replace with your Unsplash Access Key
+      const accessKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
       const url = `https://api.unsplash.com/search/photos?query=${location}&client_id=${accessKey}&per_page=1`;
 
       try {
@@ -66,7 +81,7 @@ export default function CreateLoopPage() {
         const data = await response.json();
 
         if (data.results && data.results.length > 0) {
-          return { imageError: null, imageUrl: data.results[0].urls.full }; // Return the image URL
+          return { imageError: null, imageUrl: data.results[0].urls.full };
         } else {
           return { imageError: null, imageUrl: null };
         }
@@ -83,13 +98,16 @@ export default function CreateLoopPage() {
 
     const { imageError, imageUrl } = await fetchImage(location);
     if (imageError) {
-      setLoopInitStep(imageError);
+      setIsCreatingLoop((prevState) => ({
+        ...prevState,
+        currentAction: imageError,
+        percentage: 50,
+      }));
       return;
     }
 
     const { name, slug } = initNameSlugTitle(location);
 
-    // Get Dates for the loop if available
     const startDate = date?.from ? set(date.from, { hours: 12 }) : new Date();
     const endDate = date?.to ? set(date.to, { hours: 12 }) : new Date();
 
@@ -101,26 +119,39 @@ export default function CreateLoopPage() {
         slug,
         image: imageUrl,
         location,
-        start_date: startDate ?? null, // If startDate is undefined or null, set to null
-        end_date: endDate ?? null, // If endDate is undefined or null, set to null
+        start_date: startDate ?? null,
+        end_date: endDate ?? null,
         is_private: isPrivate,
         loop_id: loopID,
         owner_id: user?.id ?? '',
       },
     ]);
+
     if (error) {
-      setLoopInitStep('Failed to create loop');
+      setIsCreatingLoop((prevState) => ({
+        ...prevState,
+        currentAction: 'Failed to create loop',
+        percentage: 70,
+      }));
       return;
     } else {
-      setLoopInitStep('Loop created successfully');
+      setIsCreatingLoop((prevState) => ({
+        ...prevState,
+        currentAction: 'Loop created successfully!',
+        percentage: 100,
+      }));
       router.push(`/loop/${loopID}/${slug}`);
     }
-
-    // Space for saving collaborators functionality
-
-    // Space for saving the loop to the database
-    // image, location name, dates, is Private, slug, loop
   };
+
+  if (isCreatingLoop.inProgress) {
+    return (
+      <AvatarLoopLoading
+        value={isCreatingLoop.percentage}
+        message={isCreatingLoop.currentAction}
+      />
+    );
+  }
   return (
     <main className="flex-1 flex flex-col gap-4 font-sans px-4 lg:px-10 items-center mt-4">
       <section className="flex-1 mb-4 w-full flex flex-col items-center justify-center max-w-2xl gap-6 border px-8 rounded-xl ">

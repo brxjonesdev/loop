@@ -60,6 +60,13 @@ export default {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
+        infinity: {
+          '0%': { transform: 'scale(1) rotate(0deg)' },
+          '25%': { transform: 'scale(0.8) rotate(45deg)' },
+          '50%': { transform: 'scale(1) rotate(180deg)' },
+          '75%': { transform: 'scale(0.8) rotate(225deg)' },
+          '100%': { transform: 'scale(1) rotate(360deg)' },
+        },
         'accordion-down': {
           from: {
             height: '0',
@@ -80,6 +87,7 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        infinity: 'infinity 1.5s linear infinite',
       },
     },
   },

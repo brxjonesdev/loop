@@ -25,3 +25,8 @@ Loop is a collaborative travel and event planning app that helps groups stay org
 - **Mintlify**: Documentation platform.
 - **Motion**: Smooth animations.
 - **Accessibility Tools**: For an inclusive design.
+
+
+
+
+- Create Components for Flights, Reservations, Transporation.

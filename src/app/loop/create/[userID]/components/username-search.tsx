@@ -7,57 +7,31 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { X } from 'lucide-react';
 import { Label } from '@/components/ui/label';
+import { createClient } from '@/utils/supabase/client';
 
-// Dummy user data
-const dummyUsers = [
-  {
-    id: 1,
-    username: 'john_doe',
-    name: 'John Doe',
-    email: 'john@example.com',
-    avatar: '/placeholder.svg?height=40&width=40',
-  },
-  {
-    id: 2,
-    username: 'jane_smith',
-    name: 'Jane Smith',
-    email: 'jane@example.com',
-    avatar: '/placeholder.svg?height=40&width=40',
-  },
-  {
-    id: 3,
-    username: 'bob_johnson',
-    name: 'Bob Johnson',
-    email: 'bob@example.com',
-    avatar: '/placeholder.svg?height=40&width=40',
-  },
-  {
-    id: 4,
-    username: 'alice_williams',
-    name: 'Alice Williams',
-    email: 'alice@example.com',
-    avatar: '/placeholder.svg?height=40&width=40',
-  },
-  {
-    id: 5,
-    username: 'charlie_brown',
-    name: 'Charlie Brown',
-    email: 'charlie@example.com',
-    avatar: '/placeholder.svg?height=40&width=40',
-  },
-];
+type Profile = {
+  id: number;
+  created_at: string;
+  user_id: string;
+  username: string;
+  profile_picture: string;
+  name: string;
+};
 
 export default function UserSearch({
   selectedUsers,
   setSelectedUsers,
+  userID,
 }: {
-  selectedUsers: typeof dummyUsers;
-  setSelectedUsers: React.Dispatch<React.SetStateAction<typeof dummyUsers>>;
+  selectedUsers: Profile[];
+  setSelectedUsers: React.Dispatch<React.SetStateAction<Profile[]>>;
+  userID: string | null;
 }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState<typeof dummyUsers>([]);
+  const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -75,15 +49,40 @@ export default function UserSearch({
     };
   }, []);
 
-  const handleSearch = () => {
-    const results = dummyUsers.filter((user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
+  const handleSearch = async () => {
     setIsSearching(true);
+
+    if (searchTerm.trim() === '') {
+      setIsSearching(false);
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select()
+        .ilike('username', `%${searchTerm}%`);
+
+      if (error) {
+        console.error('Error searching for users:', error);
+        return;
+      }
+
+      // Filter out the current user and users already in selectedUsers
+      const filteredResults = (data || []).filter(
+        (user) =>
+          user.user_id !== userID && // Ensure current user is not shown
+          !selectedUsers.some((selectedUser) => selectedUser.id === user.id) // Ensure user isn't already added
+      );
+
+      setSearchResults(filteredResults); // Only show users who haven't been added
+    } catch (err) {
+      console.error('Unexpected error:', err);
+    }
   };
 
-  const addUser = (user: (typeof dummyUsers)[0]) => {
+  const addUser = (user: Profile) => {
     setSelectedUsers((prev) => {
       if (!prev.some((u) => u.id === user.id)) {
         return [...prev, user];
@@ -114,6 +113,7 @@ export default function UserSearch({
           <Button onClick={handleSearch}>Search</Button>
         </div>
 
+        {/* Render search results only when there are results */}
         {isSearching && searchResults.length > 0 && (
           <Card className="absolute z-10 w-full mt-1 max-h-60 overflow-auto">
             <CardContent className="p-2">
@@ -123,8 +123,26 @@ export default function UserSearch({
                   className="p-2 hover:bg-gray-100 rounded cursor-pointer"
                   onClick={() => addUser(user)}
                 >
-                  <h2 className="font-semibold">{user.name}</h2>
-                  <p className="text-sm text-gray-500">@{user.username}</p>
+                  <div className="flex items-center gap-2">
+                    {/* Show profile image if available */}
+                    {user.profile_picture ? (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={user.profile_picture}
+                          alt={user.name}
+                        />
+                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                      </Avatar>
+                    )}
+                    <div>
+                      <h2 className="font-semibold">{user.name}</h2>
+                      <p className="text-sm text-gray-500">@{user.username}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </CardContent>
@@ -132,11 +150,12 @@ export default function UserSearch({
         )}
       </div>
 
+      {/* Selected users section */}
       {selectedUsers.length > 0 && (
         <div className="mb-4 flex items-center gap-4">
           <p className="text-sm font-mono">
-            {selectedUsers.length}
-            {selectedUsers.length === 1 ? ' person' : ' people'} added to this
+            {selectedUsers.length}{' '}
+            {selectedUsers.length === 1 ? 'person' : 'people'} added to this
             loop -
           </p>
           <div className="flex flex-wrap -space-x-4">
@@ -146,7 +165,7 @@ export default function UserSearch({
                   className="border-2 border-background cursor-pointer transition-transform group-hover:scale-110"
                   style={{ zIndex: selectedUsers.length - index }}
                 >
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={user.profile_picture} alt={user.name} />
                   <AvatarFallback>
                     {user.name
                       .split(' ')
@@ -156,7 +175,7 @@ export default function UserSearch({
                 </Avatar>
                 <button
                   onClick={() => removeUser(user.id)}
-                  className="absolute top-0  bg-red-500 rounded-full p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10 -right-2"
+                  className="absolute top-0 bg-red-500 rounded-full p-1 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10 -right-2"
                   aria-label={`Remove ${user.name}`}
                 >
                   <X className="h-3 w-3" />

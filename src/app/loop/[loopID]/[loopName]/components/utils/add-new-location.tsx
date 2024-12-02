@@ -1,55 +1,66 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Location } from '@/stores/itinerary-store';
 
-interface Location {
-  id: string
-  name: string
-  address: string
-  notes: string
-  category: string
-  website: string
-}
 
 interface LocationFormProps {
-  location: Location
-  onSave: (location: Location) => void
-  onCancel?: () => void
+  location: Location;
+  onSave: (location: Location) => void;
+  onCancel?: () => void;
 }
 
 const categories = [
-  "Restaurant",
-  "Cafe",
-  "Bar",
-  "Museum",
-  "Park",
-  "Shopping",
-  "Entertainment",
-  "Other"
-]
+  'Restaurant',
+  'Cafe',
+  'Bar',
+  'Museum',
+  'Park',
+  'Shopping',
+  'Entertainment',
+  'Other',
+];
 
-export default function LocationForm({ location, onSave, onCancel }: LocationFormProps) {
-  const [formData, setFormData] = useState(location)
+export default function LocationForm({
+  location,
+  onSave,
+  onCancel,
+}: LocationFormProps) {
+  const [formData, setFormData] = useState(location);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleCategoryChange = (value: string) => {
-    setFormData({ ...formData, category: value })
-  }
+    setFormData({ ...formData, category: value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSave(formData)
-  }
+    e.preventDefault();
+    onSave(formData);
+  };
 
   return (
     <Card>
@@ -90,13 +101,18 @@ export default function LocationForm({ location, onSave, onCancel }: LocationFor
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
-            <Select onValueChange={handleCategoryChange} value={formData.category}>
+            <Select
+              onValueChange={handleCategoryChange}
+              value={formData.category}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category} value={category}>{category}</SelectItem>
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -113,12 +129,13 @@ export default function LocationForm({ location, onSave, onCancel }: LocationFor
             />
           </div>
         </CardContent>
-        <CardFooter className='w-full justify-end gap-4'>
+        <CardFooter className="w-full justify-end gap-4">
           <Button type="submit">Save</Button>
-          <Button variant="outline" onClick={onCancel}>Cancel</Button>
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }
-

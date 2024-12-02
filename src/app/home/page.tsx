@@ -35,7 +35,7 @@ export default async function Homepage() {
   return (
     <section className="flex-1 gap-10 w-full bg-background font-sans container pt-8 pb-12 mx-auto grid grid-cols-1 xl:grid-cols-[.5fr,1fr]  lg:px-8">
       <LiveUpdatesBrief />
-      <RecentLoops loops={loops} />
+      <RecentLoops loops={loops} userID={user.id} />
     </section>
   );
 }

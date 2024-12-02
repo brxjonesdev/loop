@@ -1,8 +1,8 @@
 import LandingHero from '@/components/landing/landing-hero';
 import LandingFeatures from '@/components/landing/landing-features';
-import LandingBlog from '@/components/landing/landing-blog';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
+import FutureFeatures from '@/components/landing/landing-future';
 
 export default async function Home() {
   const supabase = await createClient();
@@ -17,9 +17,9 @@ export default async function Home() {
   }
 
   return (
-    <main className="h-dvh font-sans space-y-10">
+    <main className="flex-1 font-sans space-y-10">
       <LandingHero />
-      <LandingBlog />
+      <FutureFeatures />
       <LandingFeatures />
     </main>
   );

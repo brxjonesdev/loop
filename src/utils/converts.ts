@@ -6,3 +6,13 @@ export function formatDate(isoString: string): string {
 
   return `${month}/${day}/${year}`;
 }
+
+export const convertDateToString = (date: Date) => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + 1);
+  return newDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};

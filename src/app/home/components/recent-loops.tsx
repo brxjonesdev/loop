@@ -11,32 +11,27 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { formatDate } from '@/utils/converts';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import DeleteLoop from './utils/delete-loop';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function RecentLoops({ loops }: { loops: any[] | null }) {
+export default function RecentLoops({
+  loops,
+  userID,
+}: {
+  loops: any[] | null;
+  userID: string;
+}) {
   return (
     <section className="flex-1 gap-4 flex flex-col font-sans px-5 lg:px-2 w-full">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold lg:text-3xl text-xl">Your Recent Loops</h2>
-        <Link href={'/loop/create'}>
+        <Link href={`/loop/create/${userID}`}>
           <Button>
             Create a New Loop <InfinityIcon />
           </Button>
         </Link>
       </div>
-      <div className=" flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-96 bg-black/10 p-4 rounded-xl">
+      <div className=" flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-6 min-h-96 bg-black/10 p-4 rounded-xl">
         {loops && loops.length > 0 ? (
           loops.map((loop) => (
             <Card
@@ -47,7 +42,7 @@ export default function RecentLoops({ loops }: { loops: any[] | null }) {
                 <img
                   src={loop.image}
                   alt="Loop image"
-                  className="h-full w-full object-cover rounded-t-xl"
+                  className="h-[175px] w-[240px] object-cover rounded-t-xl  "
                 />
               </CardHeader>
               <CardContent className="flex-1 py-4 px-2">
@@ -69,7 +64,7 @@ export default function RecentLoops({ loops }: { loops: any[] | null }) {
             </Card>
           ))
         ) : (
-          <div className="bg-black/10 flex-1 rounded-xl flex flex-col items-center justify-center">
+          <div className="bg-black/10 flex-1 rounded-xl flex flex-col items-center justify-center col-span-8">
             <p className="text-lg">No recent loops available</p>
           </div>
         )}

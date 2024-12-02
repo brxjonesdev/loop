@@ -2,6 +2,7 @@ import InfoCard from './components/info-card';
 import Map from './components/map';
 import React from 'react';
 import { createClient } from '@/utils/supabase/server';
+import { ItineraryStoreProvider } from '@/stores/itinerary-store-provider';
 
 export default async function LoopPlan({
   params,
@@ -12,7 +13,7 @@ export default async function LoopPlan({
 }) {
   const loopID = params.loopID;
   const supabase = await createClient();
-  const { data: user, error } = await supabase.auth.getUser();
+  const { data: user } = await supabase.auth.getUser();
 
   const fetchLoopDetails = async () => {
     const { data, error } = await supabase
@@ -45,7 +46,9 @@ export default async function LoopPlan({
 
         {/* Right column */}
         <div className="flex flex-col w-full space-y-2 lg:overflow-y-auto flex-1 max-h-full">
-          <div className="flex-1 overflow-y-auto">{children}</div>
+          <div className="flex-1 overflow-y-auto">
+            <ItineraryStoreProvider>{children}</ItineraryStoreProvider>
+          </div>
         </div>
       </section>
     </section>

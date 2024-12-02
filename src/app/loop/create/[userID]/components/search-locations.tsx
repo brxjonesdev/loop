@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Search } from 'lucide-react';
 import { useDebounce } from '@/utils/hooks/useDebounce';
-import { useRef, useCallback } from 'react';
+import { useRef } from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

@@ -7,7 +7,7 @@ export default function LandingHero() {
   return (
     <div className="w-full">
       <div className="container mx-auto">
-        <div className="flex gap-8 py-20 lg:py-26 items-center justify-center flex-col">
+        <div className="flex gap-8 py-20  items-center justify-center flex-col">
           <div>
             <Link href="/blog/intro-about-loop">
               <Button variant="secondary" size="sm" className="gap-4">

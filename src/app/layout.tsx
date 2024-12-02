@@ -25,7 +25,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
-        <div className="w-full py-3 bg-foreground text-background rounded-t-md" />
+        {/* <div className="w-full py-3 bg-foreground text-background rounded-t-md" /> */}
       </body>
     </html>
   );

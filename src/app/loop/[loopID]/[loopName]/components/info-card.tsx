@@ -11,10 +11,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import AddLooperButton from './utils/add-new-looper';
-import { Edit } from 'lucide-react';
-import EditLoop from './utils/edit-loop-details';
 import { createClient } from '@/utils/supabase/server';
 import { formatDate } from '@/utils/converts';
+import Image from 'next/image';
 
 export default async function InfoCard({
   userID,
@@ -50,14 +49,6 @@ export default async function InfoCard({
     return <div>Error fetching loop or profile data</div>;
   }
 
-  // Get Live Message Here
-  const liveMessage = {
-    message: 'No Recent Updates',
-    time: '',
-  };
-
-  // create convert for time to current time
-
   // get avatar images for users in the loop
   const fetchAvatars = async () => {
     const avatars: string[] = [profileData?.profile_picture];
@@ -69,9 +60,11 @@ export default async function InfoCard({
   return (
     <Card className="w-full lg:max-w-lg flex flex-col font-sans">
       <CardHeader className="min-h-48 max-h-48 rounded-t-xl p-0 bg-black">
-        <img
+        <Image
           src={loopData?.image}
           alt="Loop image"
+          width={400}
+          height={200}
           className="h-full w-full object-cover rounded-t-xl"
         />
       </CardHeader>
@@ -83,21 +76,8 @@ export default async function InfoCard({
             {formatDate(loopData?.end_date)}
           </CardDescription>
         </div>
-        <div>
-          {isOwner && (
-            <EditLoop
-              loopName={loopData?.name}
-              startDate={loopData?.loopData?.start_date}
-              endDate={loopData?.end_date}
-            />
-          )}
-        </div>
       </CardContent>
-      <CardFooter className="font-mono flex justify-between w-full gap-4 min-h-[60px]">
-        <div>
-          <p className="text-sm">{liveMessage.message}</p>
-          <p className="text-xs">{liveMessage.time}</p>
-        </div>
+      <CardFooter className="font-mono flex justify-end w-full gap-4 min-h-[60px]">
         <div className="flex -space-x-3 justify-self-end items-center justify-center">
           <AddLooperButton />
 

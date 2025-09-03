@@ -6,6 +6,7 @@ export interface GoalsRepository {
     getGoalById(id: string): Promise<Result<Goal | null, string>>;
     updateGoal(id: string, data: GoalUpdate): Promise<Result<Goal | null, string>>;
     deleteGoal(id: string): Promise<Result<boolean, string>>;
+    getUsersGoals(userId: string): Promise<Result<Goal[], string>>;
 }
 
 export function createInMemoryGoalsRepository(): GoalsRepository {
@@ -37,6 +38,11 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
             if (index === -1) return Promise.resolve(err("Goal not found"));
             goals.splice(index, 1);
             return Promise.resolve(ok(true));
+        },
+        getUsersGoals(userId: string): Promise<Result<Goal[], string>> {
+            const userGoals = goals.filter(g => g.userId === userId);
+            return Promise.resolve(ok(userGoals));
         }
+
     };
 }

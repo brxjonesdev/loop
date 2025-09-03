@@ -1,7 +1,7 @@
 import { Result, UserCreate, UserModel, UserUpdate } from "../models";
 import { UserRepository } from "../repositories/user.repository";
 
-export function createUserService(userRepository: UserRepository) {
+export function createUserServices(userRepository: UserRepository) {
     return {
         createUser: async (data: UserCreate): Promise<Result<UserModel, string>> => {
             return userRepository.createUser(data);

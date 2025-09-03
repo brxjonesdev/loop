@@ -4,7 +4,7 @@ export interface Entry{
     content: string
     createdAt: Date
     updatedAt: Date
-    tags: Record<string, string>
+    tags: string[]
     mood: "happy" | "sad" | "neutral" | "angry" | "excited" | "anxious" | "calm" | "bored" | "confused" | "hopeful" | "frustrated" | "content" | string
     
 }
@@ -12,12 +12,12 @@ export interface Entry{
 export interface EntryCreate {
     goalID: string;
     content: string;
-    tags: Record<string, string>;
+    tags: string[];
     mood: "happy" | "sad" | "neutral" | "angry" | "excited" | "anxious" | "calm" | "bored" | "confused" | "hopeful" | "frustrated" | "content" | string;
 }
 
 export interface EntryUpdate {
     content?: string;
-    tags?: Record<string, string>;
+    tags?: string[];
     mood?: "happy" | "sad" | "neutral" | "angry" | "excited" | "anxious" | "calm" | "bored" | "confused" | "hopeful" | "frustrated" | "content" | string;
 }

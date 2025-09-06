@@ -1,6 +1,7 @@
 export interface Entry{
     id: string
     goalID: string
+    userID: string
     content: string
     createdAt: Date
     updatedAt: Date

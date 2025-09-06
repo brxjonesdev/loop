@@ -6,21 +6,64 @@ export interface EntryRepository{
     getEntryById(id: string): Promise<Result<Entry | null, string>>;
     updateEntry(id: string, data: EntryUpdate): Promise<Result<Entry | null, string>>;
     deleteEntry(id: string): Promise<Result<boolean, string>>;
-    getAllEntries(goalID: string): Promise<Result<Entry[], string>>;
+    getAllEntries(userID: string): Promise<Result<Entry[], string>>;
     addTag(entryId: string, tag: string): Promise<Result<Entry | null, string>>;
     removeTag(entryId: string, tag: string): Promise<Result<Entry | null, string>>;
 }
 
 export function createInMemoryEntryRepository(): EntryRepository {
-    const entries: Entry[] = [];
+    const entries: Entry[] = [
+        {
+            id: "entry-1",
+            userID: "user-123",
+            goalID: "goal-1",
+            createdAt: new Date("2024-06-01T10:00:00Z"),
+            updatedAt: new Date("2024-06-01T10:00:00Z"),
+            content: "First entry content",
+            tags: ["tag1", "tag2"],
+            mood: "happy"
+        },
+        {
+            id: "entry-2",
+            goalID: "goal-1",
+            userID: "user-123",
+            createdAt: new Date("2024-06-02T11:00:00Z"),
+            updatedAt: new Date("2024-06-02T11:00:00Z"),
+            content: "Second entry content",
+            tags: ["tag2"],
+            mood: "neutral"
+        },
+        {
+            id: "entry-3",
+            goalID: "goal-2",
+            userID: "user-123",
+            createdAt: new Date("2024-06-03T12:00:00Z"),
+            updatedAt: new Date("2024-06-03T12:00:00Z"),
+            content: "Third entry content",
+            tags: ["tag3"],
+            mood: "sad"
+        },
+        {
+            id: "entry-4",
+            goalID: "goal-2",
+            userID: "user-13",
+            createdAt: new Date("2024-06-04T13:00:00Z"),
+            updatedAt: new Date("2024-06-04T13:00:00Z"),
+            content: "Fourth entry content",
+            tags: [],
+            mood: "neutral"
+        },
+    ];
     return {
         async createEntry(data: EntryCreate): Promise<Result<Entry, string>> {
             const id = `entry-${nanoid(12)}`;
+            const userID = "user-123"; // Replace with actual user ID
             const entry: Entry = {
                 id: id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                ...data
+                ...data,
+                userID: userID
             };
             entries.push(entry);
             return ok(entry);
@@ -41,9 +84,9 @@ export function createInMemoryEntryRepository(): EntryRepository {
             entries.splice(index, 1);
             return ok(true);
         },
-        async getAllEntries(goalID: string): Promise<Result<Entry[], string>> {
-            const goalEntries = entries.filter(e => e.goalID === goalID);
-            return ok(goalEntries);
+        async getAllEntries(userID: string): Promise<Result<Entry[], string>> {
+            const userEntries = entries.filter(e => e.userID === userID);
+            return ok(userEntries);
         },
         async addTag(entryId: string, tag: string): Promise<Result<Entry | null, string>> {
             const entry = entries.find(e => e.id === entryId);

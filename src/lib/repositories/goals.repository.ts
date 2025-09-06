@@ -10,9 +10,27 @@ export interface GoalsRepository {
 }
 
 export function createInMemoryGoalsRepository(): GoalsRepository {
-    const goals: Goal[] = [];
+    const goals: Goal[] = [
+        {
+            id: "goal-1",
+            userId: "user-123",
+            title: "Learn TypeScript",
+            description: "Complete the TypeScript course on Codecademy",
+            createdAt: new Date(),
+            updatedAt: new Date()
+        },
+        {
+            id: "goal-2",
+            userId: "user-123",
+            title: "Build a Portfolio",
+            description: "Create a personal portfolio website to showcase projects",
+            createdAt: new Date(),
+            updatedAt: new Date()
+        }
+    ];
+
     return {
-        createGoal(data: GoalCreate): Promise<Result<Goal, string>> {
+        async createGoal(data: GoalCreate): Promise<Result<Goal, string>> {
             const id = `goal-${nanoid(12)}`;
             const goal: Goal = {
                 id: id,
@@ -21,28 +39,31 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
                 ...data
             };
             goals.push(goal);
-            return Promise.resolve(ok(goal));
+            return ok(goal);
         },
-        getGoalById(id: string): Promise<Result<Goal | null, string>> {
-            const goal = goals.find(g => g.id === id);
-            return Promise.resolve(goal ? ok(goal) : err("Goal not found"));
-        },
-        updateGoal(id: string, data: GoalUpdate): Promise<Result<Goal | null, string>> {
-            const goal = goals.find(g => g.id === id);
-            if (!goal) return Promise.resolve(err("Goal not found"));
-            Object.assign(goal, data);
-            return Promise.resolve(ok(goal));
-        },
-        deleteGoal(id: string): Promise<Result<boolean, string>> {
-            const index = goals.findIndex(g => g.id === id);
-            if (index === -1) return Promise.resolve(err("Goal not found"));
-            goals.splice(index, 1);
-            return Promise.resolve(ok(true));
-        },
-        getUsersGoals(userId: string): Promise<Result<Goal[], string>> {
-            const userGoals = goals.filter(g => g.userId === userId);
-            return Promise.resolve(ok(userGoals));
-        }
 
+        async getGoalById(id: string): Promise<Result<Goal | null, string>> {
+            const goal = goals.find(g => g.id === id);
+            return goal ? ok(goal) : err("Goal not found");
+        },
+
+        async updateGoal(id: string, data: GoalUpdate): Promise<Result<Goal | null, string>> {
+            const goal = goals.find(g => g.id === id);
+            if (!goal) return err("Goal not found");
+            Object.assign(goal, data);
+            return ok(goal);
+        },
+
+        async deleteGoal(id: string): Promise<Result<boolean, string>> {
+            const index = goals.findIndex(g => g.id === id);
+            if (index === -1) return err("Goal not found");
+            goals.splice(index, 1);
+            return ok(true);
+        },
+
+        async getUsersGoals(userId: string): Promise<Result<Goal[], string>> {
+            const userGoals = goals.filter(g => g.userId === userId);
+            return ok(userGoals);
+        }
     };
 }

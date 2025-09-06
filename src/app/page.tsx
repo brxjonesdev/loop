@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Badge, Check } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {

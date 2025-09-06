@@ -17,7 +17,8 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
             title: "Learn TypeScript",
             description: "Complete the TypeScript course on Codecademy",
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            color: "blue"
         },
         {
             id: "goal-2",
@@ -25,7 +26,8 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
             title: "Build a Portfolio",
             description: "Create a personal portfolio website to showcase projects",
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            color: "red"
         }
     ];
 
@@ -36,6 +38,7 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
                 id: id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                color: "blue",
                 ...data
             };
             goals.push(goal);

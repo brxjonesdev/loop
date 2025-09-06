@@ -1,23 +1,18 @@
-import { entryServices } from '@/lib/services'
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
-  CardAction
 } from '@/components/ui/card'
+import { Entry } from '@/lib/models'
 
-export default async function UserEntries() {
-  const result = await entryServices.getAllEntries()
-  if (!result.ok){
-    return <div>Error loading entries: {result.error}</div>
-  }
-  const entries = result.data
+export default  function UserEntries({data}: {data: Entry[]}) {
+  const [entries, setEntries] = useState<Entry[]>(data);
   return (
-    <Card className='shadow-none gap-2 border-cyan-500/50 border-2 font-nunito '>
+    <Card className='shadow-none gap-2 border-2 font-nunito '>
       <CardHeader className='space-y-0 gap-0'>
         <CardTitle className='text-2xl'>Your Entries</CardTitle>
         <CardDescription className='text-sm text-muted-foreground'>Your personal journal entries</CardDescription>

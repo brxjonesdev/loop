@@ -1,16 +1,14 @@
+"use client"
 import React from 'react'
-import { goalsServices } from '@/lib/services'
+import { useState } from 'react'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
-  CardAction
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Edit2 } from 'lucide-react'
 import {
   Accordion,
   AccordionContent,
@@ -18,46 +16,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Goal } from '@/lib/models'
+import { getButtonClass, getCardClass } from '@/lib/utils'
 
-export default async function UserGoals() {
-  const result = await goalsServices.getUsersGoals()
-  if (!result.ok){
-    return (
-      <div>
-        bruh
-      </div>
-    )
-  }
-  const goals = result.data
+export default function UserGoals({data}: {data: Goal[]}) {
+  const [goals, setGoals] = useState<Goal[]>(data);
 
-  function getCardClass(color: Goal["color"]) {
-    const colorMap: { [key: string]: string } = {
-      red: "bg-red-500/10 border-red-500/50",
-      blue: "bg-blue-500/10 border-blue-500/50",
-      green: "bg-green-500/10 border-green-500/50",
-      yellow: "bg-yellow-500/10 border-yellow-500/50",
-      orange: "bg-orange-500/10 border-orange-500/50",
-      purple: "bg-purple-500/10 border-purple-500/50",
-      pink: "bg-pink-500/10 border-pink-500/50",
-    };
-    return colorMap[color] || "";
-  }
 
-  function getButtonClass(color: Goal["color"]) {
-    const colorMap: { [key: string]: string } = {
-      red: "text-red-500 border-red-500 hover:bg-red-500/10",
-      blue: "text-blue-500 border-blue-500 hover:bg-blue-500/10",
-      green: "text-green-500 border-green-500 hover:bg-green-500/10",
-      yellow: "text-yellow-500 border-yellow-500 hover:bg-yellow-500/10",
-      orange: "text-orange-500 border-orange-500 hover:bg-orange-500/10",
-      purple: "text-purple-500 border-purple-500 hover:bg-purple-500/10",
-      pink: "text-pink-500 border-pink-500 hover:bg-pink-500/10",
-    };
-    return colorMap[color] || "";
-  }
 
   return (
-    <Card className='shadow-none gap-2 border-cyan-500/50 border-2 font-nunito '>
+    <Card className='shadow-none gap-2 border-2 font-nunito '>
       <CardHeader className='space-y-0 gap-0'>
         <CardTitle className='text-2xl'>Goals</CardTitle>
         <CardDescription className='text-sm text-muted-foreground'>Your personal goals and objectives</CardDescription>

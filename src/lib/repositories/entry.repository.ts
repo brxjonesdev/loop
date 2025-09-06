@@ -17,8 +17,8 @@ export function createInMemoryEntryRepository(): EntryRepository {
             id: "entry-1",
             userID: "user-123",
             goalID: "goal-1",
-            createdAt: new Date("2024-06-01T10:00:00Z"),
-            updatedAt: new Date("2024-06-01T10:00:00Z"),
+            createdAt: new Date("2025-09-01T10:00:00Z"),
+            updatedAt: new Date("2025-09-01T10:00:00Z"),
             content: "First entry content",
             tags: ["tag1", "tag2"],
             mood: "happy"
@@ -27,8 +27,18 @@ export function createInMemoryEntryRepository(): EntryRepository {
             id: "entry-2",
             goalID: "goal-1",
             userID: "user-123",
-            createdAt: new Date("2024-06-02T11:00:00Z"),
-            updatedAt: new Date("2024-06-02T11:00:00Z"),
+            createdAt: new Date("2025-09-02T11:00:00Z"),
+            updatedAt: new Date("2025-09-02T11:00:00Z"),
+            content: "Second entry content",
+            tags: ["tag2"],
+            mood: "happy"
+        },
+         {
+            id: "entry-2.4",
+            goalID: "goal-1",
+            userID: "user-123",
+            createdAt: new Date("2025-09-02T11:00:00Z"),
+            updatedAt: new Date("2025-09-02T11:00:00Z"),
             content: "Second entry content",
             tags: ["tag2"],
             mood: "neutral"
@@ -37,8 +47,8 @@ export function createInMemoryEntryRepository(): EntryRepository {
             id: "entry-3",
             goalID: "goal-2",
             userID: "user-123",
-            createdAt: new Date("2024-06-03T12:00:00Z"),
-            updatedAt: new Date("2024-06-03T12:00:00Z"),
+            createdAt: new Date("2025-09-03T12:00:00Z"),
+            updatedAt: new Date("2025-09-03T12:00:00Z"),
             content: "Third entry content",
             tags: ["tag3"],
             mood: "sad"
@@ -47,8 +57,8 @@ export function createInMemoryEntryRepository(): EntryRepository {
             id: "entry-4",
             goalID: "goal-2",
             userID: "user-13",
-            createdAt: new Date("2024-06-04T13:00:00Z"),
-            updatedAt: new Date("2024-06-04T13:00:00Z"),
+            createdAt: new Date("2025-09-04T13:00:00Z"),
+            updatedAt: new Date("2025-09-04T13:00:00Z"),
             content: "Fourth entry content",
             tags: [],
             mood: "neutral"

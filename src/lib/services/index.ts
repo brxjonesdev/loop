@@ -1,6 +1,8 @@
 import { createInMemoryEntryRepository } from "../repositories/entry.repository";
+import { createInMemoryGoalsRepository } from "../repositories/goals.repository";
 import { createInMemoryUserRepository } from "../repositories/user.repository";
 import { createEntryServices } from "./entry.services";
+import { createGoalsServices } from "./goals.services";
 import { createUserServices } from "./user.services";
 
 
@@ -11,3 +13,7 @@ export const entryServices = createEntryServices(entryInMemoryRepo);
 // user services
 const userInMemoryRepo = createInMemoryUserRepository();
 export const userServices = createUserServices(userInMemoryRepo);
+
+// goal services
+ const goalsInMemoryRepo = createInMemoryGoalsRepository();
+ export const goalsServices = createGoalsServices(goalsInMemoryRepo);

@@ -1,5 +1,4 @@
-import { err } from "../models";
-import { EntryCreate, EntryUpdate } from "../models/entry.model";
+import { ok, err, EntryCreate, EntryUpdate } from "../models";
 import { EntryRepository } from "../repositories/entry.repository";
 
 export const createEntryServices = (repo: EntryRepository) => {
@@ -10,31 +9,49 @@ export const createEntryServices = (repo: EntryRepository) => {
             if (!result) {
                 return err("Failed to create entry");
             }
-            return result;
+            return ok(result);
         },
         getEntryById: async (id: string) => {
             const result = await repo.getEntryById(id);
-            return result;
+            if (!result) {
+                return err("Entry not found");
+            }
+            return ok(result);
         },
         updateEntry: async (id: string, data: EntryUpdate) => {
             const result = await repo.updateEntry(id, data);
-            return result;
+            if (!result) {
+                return err("Failed to update entry");
+            }
+            return ok(result);
         },
         deleteEntry: async (id: string) => {
             const result = await repo.deleteEntry(id);
-            return result;
+            if (!result) {
+                return err("Failed to delete entry");
+            }
+            return ok(result);
         },
         getAllEntries: async (goalID: string) => {
             const result = await repo.getAllEntries(goalID);
-            return result;
+            if (!result) {
+                return err("Failed to retrieve entries");
+            }
+            return ok(result);
         },
         addTag: async (entryId: string, tag: string) => {
             const result = await repo.addTag(entryId, tag);
-            return result;
+            if (!result) {
+                return err("Failed to add tag");
+            }
+            return ok(result);
         },
         removeTag: async (entryId: string, tag: string) => {
             const result = await repo.removeTag(entryId, tag);
-            return result;
+            if (!result) {
+                return err("Failed to remove tag");
+            }
+            return ok(result);
         }
     }
 

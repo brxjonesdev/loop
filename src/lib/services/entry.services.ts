@@ -19,6 +19,14 @@ export const createEntryServices = (repo: EntryRepository) => {
             return ok(result.data);
         },
         updateEntry: async (id: string, data: EntryUpdate) => {
+            if (!id){
+                return err("ID is required");
+            }
+
+            if (!data) {
+                return err("Data is required");
+            }
+
             const result = await repo.updateEntry(id, data);
             if (!result.ok) {
                 return err("Failed to update entry");

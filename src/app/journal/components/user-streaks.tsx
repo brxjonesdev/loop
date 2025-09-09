@@ -16,7 +16,7 @@ interface StreakCalendarProps {
 }
 
 export function StreakCalendar({ entries, goalId, className, mode }: StreakCalendarProps) {
-  console.log("[v0] Entries received:", entries)
+  
 
 
   const [currentDate, setCurrentDate] = useState(new Date())

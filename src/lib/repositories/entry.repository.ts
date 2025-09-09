@@ -67,7 +67,7 @@ export function createInMemoryEntryRepository(): EntryRepository {
     return {
         async createEntry(data: EntryCreate): Promise<Result<Entry, string>> {
             const id = `entry-${nanoid(12)}`;
-            const userID = "user-123"; // Replace with actual user ID
+            const userID = "user-123"; 
             const entry: Entry = {
                 id: id,
                 createdAt: new Date(),

@@ -4,9 +4,18 @@ import UserGoals from './components/user-goals'
 import  { UserStreaksMonth, UserStreaksWeekly } from './components/user-streaks'
 import UserInfo from './components/user-info'
 import UserEntries from './components/user-entries'
-import { entryServices, goalsServices } from '@/lib/services'
+import { authServices, entryServices, goalsServices } from '@/lib/services'
+import { redirect } from 'next/navigation'
 
 export default async function JournalPage() {
+  const auth = await authServices;
+  const authStatus = await auth.getIsAuthed();
+
+  console.log("Auth status:", authStatus);
+  if (!authStatus.ok){
+    redirect('/');
+  }
+
   const goalResult = await goalsServices.getUsersGoals()
     if (!goalResult.ok){
       return (

@@ -1,7 +1,9 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import Link from "next/link";
+import { authServices } from "@/lib/services";
 
 export default function Home() {
   return (
@@ -12,8 +14,11 @@ export default function Home() {
           <h1 className="text-2xl font-bold font-heading dark:text-white">Loop</h1>
         </div>
         <div>
-          <Button>
-            <Link href="/journal">Start Your Loop</Link>
+          <Button className="shadow-none" variant={"outline"} onClick={async () => {
+            const auth = await authServices;
+            auth.signIn()
+          }}>
+            Login
           </Button>
         </div>
       </header>

@@ -11,7 +11,8 @@ export interface Goal{
 export interface GoalCreate{
     userId: string
     title: string
-    description: string
+    description: string,
+    color?: "red" | "blue" | "green" | "yellow" | "orange" | "purple" | "pink" | "teal" | "cyan" | "lime" | "indigo" | "gray"
 }
 
 export interface GoalUpdate{

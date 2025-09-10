@@ -19,6 +19,7 @@ import type { Goal, GoalCreate, GoalUpdate } from "@/lib/models/index"
 import { getButtonClass, getCardClass } from "@/lib/utils"
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react"
 import { goalsServices } from "@/lib/services"
+import { nanoid } from "nanoid"
 
 export default function UserGoals({ data }: { data: Goal[] }) {
   const [goals, setGoals] = useState<Goal[]>(data)
@@ -33,8 +34,16 @@ export default function UserGoals({ data }: { data: Goal[] }) {
   })
 
   const handleCreate = async (goalData: GoalCreate) => {
-    setGoals((prev) => [...prev, { ...goalData, id: "temp-id", createdAt: new Date(), updatedAt: new Date(), color: formData.color }])
-    const result = await goalsServices.createGoal(goalData)
+    const newGoal: Partial<Goal> = {
+      ...goalData,
+      id: `goal-${nanoid(12)}`,
+      color: formData.color as Goal["color"],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    setGoals((prev) => [newGoal as Goal, ...prev])
+    console.log("Creating goal with data:", goalData)
+    const result = await goalsServices.createGoal(newGoal as Goal)
     if (!result.ok) {
       setGoals((prev) => prev.filter((goal) => goal.id !== "temp-id"))
     }

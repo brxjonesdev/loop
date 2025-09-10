@@ -1,9 +1,9 @@
-import { GoalCreate, GoalUpdate, ok, err } from "../models";
+import {  GoalUpdate, ok, err, Goal } from "../models";
 import { GoalsRepository } from "../repositories/goals.repository";
 
 export const createGoalsServices = (repo: GoalsRepository) => {
     return {
-        createGoal: async (data: GoalCreate) => {
+        createGoal: async (data: Goal) => {
             const result = await repo.createGoal(data);
             if (!result.ok) {
                 return err("Failed to create goal");
@@ -31,8 +31,8 @@ export const createGoalsServices = (repo: GoalsRepository) => {
             }
             return ok(result.data);
         },
-        getUsersGoals: async () => {
-            const userId = "user-123"; // Placeholder for actual user ID retrieval logic
+        getUsersGoals: async (userID: string) => {
+            const userId = userID; 
             const result = await repo.getUsersGoals(userId);
             if (!result.ok) {
                 return err("Failed to retrieve user's goals");

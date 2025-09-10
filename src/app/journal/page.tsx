@@ -14,9 +14,10 @@ export default async function JournalPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
  
   // Fetch goals
-  const goalResult = await goalsServices.getUsersGoals()
+  const goalResult = await goalsServices.getUsersGoals(user?.id || '');
   if (!goalResult.ok) {
     return <div>bruh</div>
   }

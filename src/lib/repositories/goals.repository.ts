@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import { Goal, GoalCreate, GoalUpdate, Result, ok, err} from "../models";
+import { Goal, GoalCreate, GoalUpdate, Result, ok, err } from "../models";
+import { createClient } from "../auth/supabase/client";
 
 export interface GoalsRepository {
     createGoal(data: GoalCreate): Promise<Result<Goal, string>>;
@@ -18,7 +19,7 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
             description: "Complete the TypeScript course on Codecademy",
             createdAt: new Date(),
             updatedAt: new Date(),
-            color: "blue"
+            color: "blue",
         },
         {
             id: "goal-2",
@@ -27,46 +28,109 @@ export function createInMemoryGoalsRepository(): GoalsRepository {
             description: "Create a personal portfolio website to showcase projects",
             createdAt: new Date(),
             updatedAt: new Date(),
-            color: "red"
-        }
+            color: "red",
+        },
     ];
 
     return {
         async createGoal(data: GoalCreate): Promise<Result<Goal, string>> {
             const id = `goal-${nanoid(12)}`;
             const goal: Goal = {
-                id: id,
+                id,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 color: "blue",
-                ...data
+                ...data,
             };
             goals.push(goal);
             return ok(goal);
         },
 
         async getGoalById(id: string): Promise<Result<Goal | null, string>> {
-            const goal = goals.find(g => g.id === id);
+            const goal = goals.find((g) => g.id === id);
             return goal ? ok(goal) : err("Goal not found");
         },
 
         async updateGoal(id: string, data: GoalUpdate): Promise<Result<Goal | null, string>> {
-            const goal = goals.find(g => g.id === id);
+            const goal = goals.find((g) => g.id === id);
             if (!goal) return err("Goal not found");
-            Object.assign(goal, data);
+            Object.assign(goal, data, { updatedAt: new Date() });
             return ok(goal);
         },
 
         async deleteGoal(id: string): Promise<Result<boolean, string>> {
-            const index = goals.findIndex(g => g.id === id);
+            const index = goals.findIndex((g) => g.id === id);
             if (index === -1) return err("Goal not found");
             goals.splice(index, 1);
             return ok(true);
         },
 
         async getUsersGoals(userId: string): Promise<Result<Goal[], string>> {
-            const userGoals = goals.filter(g => g.userId === userId);
+            const userGoals = goals.filter((g) => g.userId === userId);
             return ok(userGoals);
-        }
+        },
+    };
+}
+
+export function createSupabaseGoalsRepository(): GoalsRepository {
+    const supabase = createClient();
+
+    return {
+        async createGoal(data: Goal): Promise<Result<Goal, string>> {
+            const { data: goal, error } = await supabase
+                .from("goals")
+                .insert({
+                    ...data,
+                })
+                .select()
+                .single();
+            
+                console.log("Inserted goal:", goal);
+                console.log("Insertion error:", error);
+
+            if (error) return err(error.message);
+            return ok(goal as Goal);
+        },
+
+        async getGoalById(id: string): Promise<Result<Goal | null, string>> {
+            const { data: goal, error } = await supabase
+                .from("goals")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+            if (error) return err(error.message);
+            return ok(goal as Goal);
+        },
+
+        async updateGoal(id: string, data: GoalUpdate): Promise<Result<Goal | null, string>> {
+            const { data: goal, error } = await supabase
+                .from("goals")
+                .update({
+                    ...data,
+                    updatedAt: new Date().toISOString(),
+                })
+                .eq("id", id)
+                .select()
+                .single();
+
+            if (error) return err(error.message);
+            return ok(goal as Goal);
+        },
+
+        async deleteGoal(id: string): Promise<Result<boolean, string>> {
+            const { error } = await supabase.from("goals").delete().eq("id", id);
+            if (error) return err(error.message);
+            return ok(true);
+        },
+
+        async getUsersGoals(userId: string): Promise<Result<Goal[], string>> {
+            const { data: goals, error } = await supabase
+                .from("goals")
+                .select("*")
+                .eq("userId", userId);
+            if (error) return err(error.message);
+            return ok(goals as Goal[]);
+        },
     };
 }

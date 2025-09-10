@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { Entry, EntryCreate, EntryUpdate, Result, ok, err } from "../models";
+import { createClient } from "../auth/supabase/client";
 
 export interface EntryRepository{
     createEntry(data: EntryCreate): Promise<Result<Entry, string>>;
@@ -110,5 +111,122 @@ export function createInMemoryEntryRepository(): EntryRepository {
             entry.tags = entry.tags.filter(t => t !== tag);
             return ok(entry);
         }
+    };
+}
+
+export function createSupabaseEntryRepository(): EntryRepository {
+    const supabase = createClient();
+
+    return {
+        async createEntry(data: EntryCreate): Promise<Result<Entry, string>> {
+            const id = `entry-${nanoid(12)}`;
+            const { data: entry, error } = await supabase
+                .from("entries")
+                .insert({
+                    id,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    ...data,
+                })
+                .select()
+                .single();
+
+            if (error) return err(error.message);
+            return ok(entry as Entry);
+        },
+
+        async getEntryById(id: string): Promise<Result<Entry | null, string>> {
+            const { data: entry, error } = await supabase
+                .from("entries")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+            if (error) return err(error.message);
+            return ok(entry as Entry);
+        },
+
+        async updateEntry(id: string, data: EntryUpdate): Promise<Result<Entry | null, string>> {
+            const { data: entry, error } = await supabase
+                .from("entries")
+                .update({
+                    ...data,
+                    updatedAt: new Date().toISOString(),
+                })
+                .eq("id", id)
+                .select()
+                .single();
+
+            if (error) return err(error.message);
+            return ok(entry as Entry);
+        },
+
+        async deleteEntry(id: string): Promise<Result<boolean, string>> {
+            const { error } = await supabase.from("entries").delete().eq("id", id);
+            if (error) return err(error.message);
+            return ok(true);
+        },
+
+        async getAllEntries(userID: string): Promise<Result<Entry[], string>> {
+            const { data: entries, error } = await supabase
+                .from("entries")
+                .select("*")
+                .eq("userId", userID);
+
+            if (error) return err(error.message);
+            return ok(entries as Entry[]);
+        },
+
+        async addTag(entryId: string, tag: string): Promise<Result<Entry | null, string>> {
+            // Fetch current tags
+            const { data: entry, error } = await supabase
+                .from("entries")
+                .select("tags")
+                .eq("id", entryId)
+                .single();
+
+            if (error || !entry) return err("Entry not found");
+
+            const updatedTags = [...(entry.tags ?? []), tag];
+
+            const { data: updated, error: updateError } = await supabase
+                .from("entries")
+                .update({
+                    tags: updatedTags,
+                    updatedAt: new Date().toISOString(),
+                })
+                .eq("id", entryId)
+                .select()
+                .single();
+
+            if (updateError) return err(updateError.message);
+            return ok(updated as Entry);
+        },
+
+        async removeTag(entryId: string, tag: string): Promise<Result<Entry | null, string>> {
+            // Fetch current tags
+            const { data: entry, error } = await supabase
+                .from("entries")
+                .select("tags")
+                .eq("id", entryId)
+                .single();
+
+            if (error || !entry) return err("Entry not found");
+
+            const updatedTags = (entry.tags ?? []).filter((t: string) => t !== tag);
+
+            const { data: updated, error: updateError } = await supabase
+                .from("entries")
+                .update({
+                    tags: updatedTags,
+                    updatedAt: new Date().toISOString(),
+                })
+                .eq("id", entryId)
+                .select()
+                .single();
+
+            if (updateError) return err(updateError.message);
+            return ok(updated as Entry);
+        },
     };
 }

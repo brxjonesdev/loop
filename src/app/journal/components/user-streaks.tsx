@@ -201,7 +201,7 @@ export function UserStreaksMonth({ entries, goalId }: UserStreaksProps) {
 export function UserStreaksWeekly({ entries, goalId }: UserStreaksProps) {
   return (
     <div className="md:hidden">
-      <StreakCalendar entries={entries} goalId={goalId} className="w-full" mode="weekly" />
+      <StreakCalendar entries={entries} goalId={goalId} className="w-full border bg-black/5" mode="weekly" />
     </div>
   )
 }

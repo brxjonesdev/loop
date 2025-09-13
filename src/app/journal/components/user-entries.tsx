@@ -9,12 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Trash2, Edit, Plus, X } from "lucide-react"
-import type { Entry, EntryCreate, EntryUpdate } from "@/lib/models/index"
+import type { Entry, EntryCreate, EntryUpdate, Goal } from "@/lib/models/index"
 import { useState } from "react"
 import { entryServices } from "@/lib/services"
+import { nanoid } from "nanoid"
+import { getSupabaseUserID } from "@/lib/utils"
+import { createClient } from "@/lib/auth/supabase/client"
 
 interface UserEntriesProps {
-  data: Entry[]
+  data: Entry[],
+  goals: Goal[]
 }
 
 const moodColors = {
@@ -34,7 +38,7 @@ const moodColors = {
 
 const moods = Object.keys(moodColors) as Array<keyof typeof moodColors>
 
-export default function UserEntries({ data }: UserEntriesProps) {
+export default function UserEntries({ data, goals }: UserEntriesProps) {
   const [entries, setEntries] = useState<Entry[]>(data)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null)
@@ -46,22 +50,27 @@ export default function UserEntries({ data }: UserEntriesProps) {
   })
   const [editForm, setEditForm] = useState<EntryUpdate>({})
   const [newTag, setNewTag] = useState("")
+  const supabase = createClient();
 
   const createEntry = async (entry: EntryCreate): Promise<void> => {
-    const result = await entryServices.createEntry(entry)
-    if (!result.ok){
-      console.error("Failed to create entry:", result.error)
-      return
-    }
-
+    console.log("Creating entry:", entry)
     const newEntry: Entry = {
-      id: Date.now().toString(),
-      ...entry,
+      id: `entry-${nanoid(12)}`,
+      goalID: entry.goalID,
+      userID: await getSupabaseUserID(supabase),
+      content: entry.content,
       createdAt: new Date(),
       updatedAt: new Date(),
-      userID: "user-123", // Placeholder user ID
+      tags: entry.tags,
+      mood: entry.mood,
     }
     setEntries((prev) => [newEntry, ...prev])
+    const result = await entryServices.createEntry(newEntry)
+    if (!result.ok) {
+      setEntries((prev) => prev.filter((e) => e.id !== newEntry.id))
+      // Show error notification
+      console.error("Failed to create entry:", result.error)
+    }
   }
 
   const updateEntry = async (id: string, entry: EntryUpdate): Promise<void> => {
@@ -72,7 +81,7 @@ export default function UserEntries({ data }: UserEntriesProps) {
     if (!result.ok) {
       console.error("Failed to update entry:", result.error)
       // reverting the optimistic update in case of failure
-      const fetchResult = await entryServices.getAllEntries()
+      const fetchResult = await entryServices.getAllEntries(await getSupabaseUserID(supabase))
       if (!fetchResult.ok) {
         console.error("Failed to fetch entries:", fetchResult.error)
         return
@@ -87,7 +96,7 @@ export default function UserEntries({ data }: UserEntriesProps) {
     if (!result.ok) {
       console.error("Failed to delete entry:", result.error)
       // reverting the optimistic update in case of failure
-      const fetchResult = await entryServices.getAllEntries()
+      const fetchResult = await entryServices.getAllEntries(await getSupabaseUserID(supabase))
       if (!fetchResult.ok) {
         console.error("Failed to fetch entries:", fetchResult.error)
         return
@@ -168,14 +177,25 @@ export default function UserEntries({ data }: UserEntriesProps) {
                 <DialogTitle>Create New Entry</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
+                {/* Select goal */}
                 <div>
-                  <Label htmlFor="goalID">Goal ID</Label>
-                  <Input
-                    id="goalID"
+                  <Label htmlFor="goal">Goal</Label>
+                  <Select
                     value={createForm.goalID}
-                    onChange={(e) => setCreateForm((prev: any) => ({ ...prev, goalID: e.target.value }))}
-                    placeholder="Enter goal ID"
-                  />
+                    onValueChange={(value) => setCreateForm((prev: any) => ({ ...prev, goalID: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a goal (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {goals.map((goal: Goal) => (
+                        <SelectItem key={goal.id} value={goal.id}>
+                          {goal.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-sm text-muted-foreground">Optional</p>
                 </div>
                 <div>
                   <Label htmlFor="content">Content</Label>

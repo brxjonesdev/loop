@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { Goal } from "./models";
+import { createClient } from "./auth/supabase/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -44,3 +45,12 @@ export function getDotClass(color: Goal["color"]) {
     };
     return colorMap[color] || "";
   }
+
+export async function getSupabaseUserID(supabaseClient: ReturnType<typeof createClient>): Promise<string> {
+    const supabase = supabaseClient
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+        throw new Error("User not authenticated");
+    }
+    return user.id;
+}

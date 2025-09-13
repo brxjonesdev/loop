@@ -16,16 +16,18 @@ import {
 } from "@/components/ui/dialog"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import type { Goal, GoalCreate, GoalUpdate } from "@/lib/models/index"
-import { getButtonClass, getCardClass } from "@/lib/utils"
+import { getButtonClass, getCardClass, getSupabaseUserID } from "@/lib/utils"
 import { Plus, Edit2, Trash2, Save, X } from "lucide-react"
 import { goalsServices } from "@/lib/services"
 import { nanoid } from "nanoid"
+import { createClient } from "@/lib/auth/supabase/client"
 
 export default function UserGoals({ data }: { data: Goal[] }) {
   const [goals, setGoals] = useState<Goal[]>(data)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<string | null>(null)
+  const supabase = createClient();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -157,9 +159,9 @@ export default function UserGoals({ data }: { data: Goal[] }) {
               </Select>
               <div className="flex gap-2">
                 <Button
-                  onClick={() =>
+                  onClick={async () =>
                     handleCreate({
-                      userId: "current-user", // User will provide actual userId
+                      userId: await getSupabaseUserID(supabase), 
                       title: formData.title,
                       description: formData.description,
                     })

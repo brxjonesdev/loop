@@ -118,14 +118,10 @@ export function createSupabaseEntryRepository(): EntryRepository {
     const supabase = createClient();
 
     return {
-        async createEntry(data: EntryCreate): Promise<Result<Entry, string>> {
-            const id = `entry-${nanoid(12)}`;
+        async createEntry(data: Entry): Promise<Result<Entry, string>> {
             const { data: entry, error } = await supabase
                 .from("entries")
                 .insert({
-                    id,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
                     ...data,
                 })
                 .select()
@@ -171,7 +167,7 @@ export function createSupabaseEntryRepository(): EntryRepository {
             const { data: entries, error } = await supabase
                 .from("entries")
                 .select("*")
-                .eq("userId", userID);
+                .eq("userID", userID);
 
             if (error) return err(error.message);
             return ok(entries as Entry[]);

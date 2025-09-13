@@ -1,9 +1,9 @@
-import { ok, err, EntryCreate, EntryUpdate } from "../models";
+import { ok, err, EntryUpdate, Entry } from "../models";
 import { EntryRepository } from "../repositories/entry.repository";
 
 export const createEntryServices = (repo: EntryRepository) => {
     return {
-        createEntry: async (data: EntryCreate) => {
+        createEntry: async (data: Entry) => {
             // validate data
             const result = await repo.createEntry(data);
             if (!result.ok) {
@@ -40,8 +40,8 @@ export const createEntryServices = (repo: EntryRepository) => {
             }
             return ok(result.data);
         },
-        getAllEntries: async () => {
-            const userID = "user-123"; // Replace with actual user ID
+        getAllEntries: async (userID: string) => {
+            console.log("Fetching entries for userID:", userID);
             const result = await repo.getAllEntries(userID);
             if (!result.ok) {
                 return err("Failed to retrieve entries");

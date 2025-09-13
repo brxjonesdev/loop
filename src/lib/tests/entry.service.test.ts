@@ -44,7 +44,7 @@ describe('Entry Services', () => {
       }
 
       vi.mocked(mockRepo.createEntry).mockResolvedValueOnce(ok(createdEntry))
-      const result = await services.createEntry(mockEntry)
+      const result = await services.createEntry(createdEntry)
       expect(result.ok).toBe(true)
       if (result.ok) {
         expect(result.data).toEqual(createdEntry)
@@ -53,8 +53,15 @@ describe('Entry Services', () => {
 
     })
     it("should handle repository errors gracefully", async () => {
+      const createdEntry: Entry = {
+        id: "entry123",
+        userID: "dummyUser",
+        ...mockEntry,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
       vi.mocked(mockRepo.createEntry).mockResolvedValueOnce(err("Database error"))
-      const result = await services.createEntry(mockEntry)
+      const result = await services.createEntry(createdEntry)
       expect(result.ok).toBe(false)
       if (!result.ok) {
         expect(result.error).toBe("Failed to create entry")
@@ -199,7 +206,7 @@ describe('Entry Services', () => {
 
     it("should retrieve all entries successfully", async () => {
       vi.mocked(mockRepo.getAllEntries).mockResolvedValueOnce(ok(mockEntries))
-      const result = await services.getAllEntries()
+      const result = await services.getAllEntries("user1")
       expect(result.ok).toBe(true)
       if (result.ok) {
         expect(result.data).toEqual(mockEntries)
@@ -207,7 +214,7 @@ describe('Entry Services', () => {
     })
     it("should handle repository errors gracefully", async () => {
       vi.mocked(mockRepo.getAllEntries).mockResolvedValueOnce(err("Database error"))
-      const result = await services.getAllEntries()
+      const result = await services.getAllEntries("user1")
       expect(result.ok).toBe(false)
       if (!result.ok) {
         expect(result.error).toBe("Failed to retrieve entries")

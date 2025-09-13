@@ -1,24 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Trash2, Edit, Plus, X } from "lucide-react"
-import type { Entry, EntryCreate, EntryUpdate, Goal } from "@/lib/models/index"
-import { useState } from "react"
-import { entryServices } from "@/lib/services"
-import { nanoid } from "nanoid"
-import { getSupabaseUserID } from "@/lib/utils"
-import { createClient } from "@/lib/auth/supabase/client"
+"use client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Trash2, Edit, Plus, X } from "lucide-react";
+import type { Entry, EntryCreate, EntryUpdate, Goal } from "@/lib/models/index";
+import { useState } from "react";
+import { entryServices } from "@/lib/services";
+import { nanoid } from "nanoid";
+import { getSupabaseUserID } from "@/lib/utils";
+import { createClient } from "@/lib/auth/supabase/client";
 
 interface UserEntriesProps {
-  data: Entry[],
-  goals: Goal[]
+  data: Entry[];
+  goals: Goal[];
 }
 
 const moodColors = {
@@ -34,26 +52,26 @@ const moodColors = {
   hopeful: "bg-emerald-100 text-emerald-800 border-emerald-200",
   frustrated: "bg-rose-100 text-rose-800 border-rose-200",
   content: "bg-indigo-100 text-indigo-800 border-indigo-200",
-}
+};
 
-const moods = Object.keys(moodColors) as Array<keyof typeof moodColors>
+const moods = Object.keys(moodColors) as Array<keyof typeof moodColors>;
 
 export default function UserEntries({ data, goals }: UserEntriesProps) {
-  const [entries, setEntries] = useState<Entry[]>(data)
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-  const [editingEntry, setEditingEntry] = useState<Entry | null>(null)
+  const [entries, setEntries] = useState<Entry[]>(data);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
   const [createForm, setCreateForm] = useState<EntryCreate>({
     goalID: "",
     content: "",
     tags: [],
     mood: "neutral",
-  })
-  const [editForm, setEditForm] = useState<EntryUpdate>({})
-  const [newTag, setNewTag] = useState("")
+  });
+  const [editForm, setEditForm] = useState<EntryUpdate>({});
+  const [newTag, setNewTag] = useState("");
   const supabase = createClient();
 
   const createEntry = async (entry: EntryCreate): Promise<void> => {
-    console.log("Creating entry:", entry)
+    console.log("Creating entry:", entry);
     const newEntry: Entry = {
       id: `entry-${nanoid(12)}`,
       goalID: entry.goalID,
@@ -63,68 +81,73 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
       updatedAt: new Date(),
       tags: entry.tags,
       mood: entry.mood,
-    }
-    setEntries((prev) => [newEntry, ...prev])
-    const result = await entryServices.createEntry(newEntry)
+    };
+    setEntries((prev) => [newEntry, ...prev]);
+    const result = await entryServices.createEntry(newEntry);
     if (!result.ok) {
-      setEntries((prev) => prev.filter((e) => e.id !== newEntry.id))
+      setEntries((prev) => prev.filter((e) => e.id !== newEntry.id));
       // Show error notification
-      console.error("Failed to create entry:", result.error)
+      console.error("Failed to create entry:", result.error);
     }
-  }
+  };
 
   const updateEntry = async (id: string, entry: EntryUpdate): Promise<void> => {
     setEntries((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...entry, updatedAt: new Date() } : e))
-    )
-    const result = await entryServices.updateEntry(id, entry)
+      prev.map((e) =>
+        e.id === id ? { ...e, ...entry, updatedAt: new Date() } : e
+      )
+    );
+    const result = await entryServices.updateEntry(id, entry);
     if (!result.ok) {
-      console.error("Failed to update entry:", result.error)
+      console.error("Failed to update entry:", result.error);
       // reverting the optimistic update in case of failure
-      const fetchResult = await entryServices.getAllEntries(await getSupabaseUserID(supabase))
+      const fetchResult = await entryServices.getAllEntries(
+        await getSupabaseUserID(supabase)
+      );
       if (!fetchResult.ok) {
-        console.error("Failed to fetch entries:", fetchResult.error)
-        return
+        console.error("Failed to fetch entries:", fetchResult.error);
+        return;
       }
-      setEntries(fetchResult.data)
+      setEntries(fetchResult.data);
     }
-  }
+  };
 
   const deleteEntry = async (id: string): Promise<void> => {
-    setEntries((prev) => prev.filter((e) => e.id !== id))
-    const result = await entryServices.deleteEntry(id)
+    setEntries((prev) => prev.filter((e) => e.id !== id));
+    const result = await entryServices.deleteEntry(id);
     if (!result.ok) {
-      console.error("Failed to delete entry:", result.error)
+      console.error("Failed to delete entry:", result.error);
       // reverting the optimistic update in case of failure
-      const fetchResult = await entryServices.getAllEntries(await getSupabaseUserID(supabase))
+      const fetchResult = await entryServices.getAllEntries(
+        await getSupabaseUserID(supabase)
+      );
       if (!fetchResult.ok) {
-        console.error("Failed to fetch entries:", fetchResult.error)
-        return
+        console.error("Failed to fetch entries:", fetchResult.error);
+        return;
       }
-      setEntries(fetchResult.data)
+      setEntries(fetchResult.data);
     }
-
-  }
+  };
 
   const handleCreate = async () => {
     if (createForm.content.trim()) {
-      await createEntry(createForm)
-      setCreateForm({ goalID: "", content: "", tags: [], mood: "neutral" })
-      setIsCreateOpen(false)
+      await createEntry(createForm);
+      setCreateForm({ goalID: "", content: "", tags: [], mood: "neutral" });
+      setIsCreateOpen(false);
     }
-  }
+  };
 
   const handleUpdate = async () => {
     if (editingEntry && Object.keys(editForm).length > 0) {
-      await updateEntry(editingEntry.id, editForm)
-      setEditingEntry(null)
-      setEditForm({})
+      await updateEntry(editingEntry.id, editForm);
+      setEditingEntry(null);
+      setEditForm({});
     }
-  }
+  };
 
   const handleDelete = async (id: string) => {
-    await deleteEntry(id)
-  }
+    await deleteEntry(id);
+  };
 
   const addTag = (isEdit = false) => {
     if (newTag.trim()) {
@@ -132,30 +155,32 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
         setEditForm((prev: EntryUpdate) => ({
           ...prev,
           tags: [...(prev.tags || editingEntry?.tags || []), newTag.trim()],
-        }))
+        }));
       } else {
         setCreateForm((prev: EntryCreate) => ({
           ...prev,
           tags: [...prev.tags, newTag.trim()],
-        }))
+        }));
       }
-      setNewTag("")
+      setNewTag("");
     }
-  }
+  };
 
   const removeTag = (tagToRemove: string, isEdit = false) => {
     if (isEdit) {
       setEditForm((prev: EntryUpdate) => ({
         ...prev,
-        tags: (prev.tags ?? editingEntry?.tags ?? []).filter((tag: string) => tag !== tagToRemove),
-      }))
+        tags: (prev.tags ?? editingEntry?.tags ?? []).filter(
+          (tag: string) => tag !== tagToRemove
+        ),
+      }));
     } else {
       setCreateForm((prev: EntryCreate) => ({
         ...prev,
         tags: prev.tags.filter((tag: string) => tag !== tagToRemove),
-      }))
+      }));
     }
-  }
+  };
 
   return (
     <Card className="shadow-none gap-2 border-2 font-nunito">
@@ -163,7 +188,9 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-2xl">Your Entries</CardTitle>
-            <CardDescription className="text-sm text-muted-foreground">Your personal journal entries</CardDescription>
+            <CardDescription className="text-sm text-muted-foreground">
+              Your personal journal entries
+            </CardDescription>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
@@ -182,7 +209,9 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                   <Label htmlFor="goal">Goal</Label>
                   <Select
                     value={createForm.goalID}
-                    onValueChange={(value) => setCreateForm((prev: any) => ({ ...prev, goalID: value }))}
+                    onValueChange={(value) =>
+                      setCreateForm((prev: any) => ({ ...prev, goalID: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select a goal (optional)" />
@@ -202,7 +231,12 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                   <Textarea
                     id="content"
                     value={createForm.content}
-                    onChange={(e) => setCreateForm((prev: any) => ({ ...prev, content: e.target.value }))}
+                    onChange={(e) =>
+                      setCreateForm((prev: any) => ({
+                        ...prev,
+                        content: e.target.value,
+                      }))
+                    }
                     placeholder="Write your entry..."
                     rows={4}
                   />
@@ -211,7 +245,9 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                   <Label htmlFor="mood">Mood</Label>
                   <Select
                     value={createForm.mood}
-                    onValueChange={(value) => setCreateForm((prev: any) => ({ ...prev, mood: value }))}
+                    onValueChange={(value) =>
+                      setCreateForm((prev: any) => ({ ...prev, mood: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -240,15 +276,25 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {createForm.tags.map((tag: string) => (
-                      <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
                         {tag}
-                        <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
+                        <X
+                          className="h-3 w-3 cursor-pointer"
+                          onClick={() => removeTag(tag)}
+                        />
                       </Badge>
                     ))}
                   </div>
                 </div>
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsCreateOpen(false)}
+                  >
                     Cancel
                   </Button>
                   <Button onClick={handleCreate}>Create Entry</Button>
@@ -268,8 +314,15 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
           <CardContent key={entry.id} className="border-b last:border-b-0">
             <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold">{entry.createdAt.toLocaleString()}</h3>
-                <Badge className={moodColors[entry.mood as keyof typeof moodColors] || moodColors.neutral}>
+                <h3 className="text-lg font-semibold">
+                  {entry.createdAt.toLocaleString()}
+                </h3>
+                <Badge
+                  className={
+                    moodColors[entry.mood as keyof typeof moodColors] ||
+                    moodColors.neutral
+                  }
+                >
                   {entry.mood}
                 </Badge>
               </div>
@@ -278,12 +331,12 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => {
-                    setEditingEntry(entry)
+                    setEditingEntry(entry);
                     setEditForm({
                       content: entry.content,
                       tags: [...entry.tags],
                       mood: entry.mood,
-                    })
+                    });
                   }}
                 >
                   <Edit className="h-4 w-4" />
@@ -298,7 +351,9 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                 </Button>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground mb-2">{entry.content}</p>
+            <p className="text-sm text-muted-foreground mb-2">
+              {entry.content}
+            </p>
             {entry.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {entry.tags.map((tag: string) => (
@@ -323,8 +378,13 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                 <Label htmlFor="edit-content">Content</Label>
                 <Textarea
                   id="edit-content"
-                  value={editForm.content || editingEntry.content}
-                  onChange={(e) => setEditForm((prev: any) => ({ ...prev, content: e.target.value }))}
+                  value={editForm.content ?? editingEntry.content}
+                  onChange={(e) =>
+                    setEditForm((prev: any) => ({
+                      ...prev,
+                      content: e.target.value,
+                    }))
+                  }
                   rows={4}
                 />
               </div>
@@ -332,7 +392,9 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                 <Label htmlFor="edit-mood">Mood</Label>
                 <Select
                   value={editForm.mood || editingEntry.mood}
-                  onValueChange={(value) => setEditForm((prev: any) => ({ ...prev, mood: value }))}
+                  onValueChange={(value) =>
+                    setEditForm((prev: any) => ({ ...prev, mood: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -361,9 +423,16 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {(editForm.tags || editingEntry.tags).map((tag: string) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
                       {tag}
-                      <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag, true)} />
+                      <X
+                        className="h-3 w-3 cursor-pointer"
+                        onClick={() => removeTag(tag, true)}
+                      />
                     </Badge>
                   ))}
                 </div>
@@ -379,5 +448,5 @@ export default function UserEntries({ data, goals }: UserEntriesProps) {
         </DialogContent>
       </Dialog>
     </Card>
-  )
+  );
 }

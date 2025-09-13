@@ -30,7 +30,12 @@ export function StreakCalendar({ entries, goalId, className, mode }: StreakCalen
   const entryDates = useMemo(() => {
     const dateMap = new Map<string, Entry[]>()
     filteredEntries.forEach((entry) => {
-      const dateKey = entry.createdAt.toISOString().split("T")[0]
+      // Ensure entry.createdAt is a Date object
+      const createdAt =
+        entry.createdAt instanceof Date
+          ? entry.createdAt
+          : new Date(entry.createdAt)
+      const dateKey = createdAt.toISOString().split("T")[0]
       if (!dateMap.has(dateKey)) {
         dateMap.set(dateKey, [])
       }
@@ -185,12 +190,7 @@ export function StreakCalendar({ entries, goalId, className, mode }: StreakCalen
   )
 }
 
-interface UserStreaksProps {
-  entries: Entry[]
-  goalId?: string
-}
-
-export function UserStreaksMonth({ entries, goalId }: UserStreaksProps) {
+export function UserStreaksMonth({ entries, goalId }: StreakCalendarProps) {
   return (
     <div className="hidden md:block">
       <StreakCalendar entries={entries} goalId={goalId} className="w-full" mode="monthly" />
@@ -198,7 +198,9 @@ export function UserStreaksMonth({ entries, goalId }: UserStreaksProps) {
   )
 }
 
-export function UserStreaksWeekly({ entries, goalId }: UserStreaksProps) {
+
+export function UserStreaksWeekly({ entries, goalId }: StreakCalendarProps) {
+  console.log("Rendering UserStreaksWeekly with entries:", entries)
   return (
     <div className="md:hidden">
       <StreakCalendar entries={entries} goalId={goalId} className="w-full border bg-black/5" mode="weekly" />

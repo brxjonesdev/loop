@@ -41,6 +41,7 @@ export default async function JournalPage() {
       color: goal?.color || 'gray',
     }
   })
+  console.log("Entries with color:", entriesWithColor)
 
   return (
     <div className='flex-1 grid grid-cols-1 gap-4 py-4 md:grid-cols-[.5fr_1fr_.5fr]'>

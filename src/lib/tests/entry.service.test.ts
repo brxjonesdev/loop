@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { EntryRepository } from '../repositories/entry.repository'
 import { ok, err, EntryCreate, EntryUpdate, Entry } from '../models'
 import { createEntryServices } from '../services/entry.services'
@@ -49,7 +49,7 @@ describe('Entry Services', () => {
       if (result.ok) {
         expect(result.data).toEqual(createdEntry)
       }
-      expect(mockRepo.createEntry).toHaveBeenCalledWith(mockEntry)
+      expect(mockRepo.createEntry).toHaveBeenCalledWith(createdEntry)
 
     })
     it("should handle repository errors gracefully", async () => {

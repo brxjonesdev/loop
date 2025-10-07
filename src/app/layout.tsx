@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Nunito, Nunito_Sans } from "next/font/google";
+import { Nunito, Nunito_Sans, SUSE, Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ui/theme";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -10,6 +11,17 @@ const nunito = Nunito({
 const nunitoSans = Nunito_Sans({
   variable: "--font-nunito-sans",
   subsets: ["latin"],
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+});
+
+const suse = SUSE({
+  variable: "--font-suse",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 
@@ -24,11 +36,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${nunito.variable} ${nunitoSans.variable} antialiased flex flex-col min-h-screen `}
+        className={`${nunito.variable} ${nunitoSans.variable} ${inter.variable} ${suse.variable} antialiased flex flex-col min-h-screen `}
       >
-        {children}
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
       </body>
     </html>
   );

@@ -6,7 +6,6 @@ import {
 } from "lucide-react"
 
 import Logo from "@/components/logo"
-import UserMenu from "@/components/user-menu"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
@@ -28,6 +27,7 @@ import {
 import AuthButton from "./auth-button"
 import { createClient } from "../supabase/server"
 import { redirect } from "next/navigation"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 // Navigation links with icons for desktop icon-only navigation
 const navigationLinks = [
@@ -47,7 +47,7 @@ export default async function Navbar() {
 
 
   return (
-    <header className="border-b px-4 md:px-6 w-full">
+    <header className="border-b px-4 md:px-4 w-full">
       <div className="flex h-16 items-center justify-between gap-4">
         <div className="flex flex-1 items-center gap-2">
         {isAuthenticated && (<Popover>
@@ -111,6 +111,7 @@ export default async function Navbar() {
             </PopoverContent>
           </Popover>)}
           <div className="flex items-center gap-6">
+            <SidebarTrigger className="md:hidden"/>
             <a href="#" className="text-primary hover:text-primary/90">
               <Logo />
             </a>
@@ -146,7 +147,6 @@ export default async function Navbar() {
         <div className="flex items-center gap-2">
           {isAuthenticated  ? (
             <div>
-              <UserMenu />
             </div>
           ) : <div className="flex gap-2">
              <AuthButton content="Start using Loop" />

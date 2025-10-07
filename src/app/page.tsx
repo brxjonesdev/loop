@@ -5,7 +5,7 @@ import AuthButton from "@/lib/auth/components/auth-button";
 
 export default function Home() {
   return (
-    <main className="max-w-6xl mx-auto px-4 space-y-10  ">
+    <main className="w-full mx-auto px-4 space-y-10  ">
       
     </main>
   );

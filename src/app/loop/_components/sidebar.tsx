@@ -34,7 +34,7 @@ export function AppSidebar() {
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
-          <ProjectSwitcher projects={dummyProjects} />
+          {/* <ProjectSwitcher projects={dummyProjects} /> */}
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>

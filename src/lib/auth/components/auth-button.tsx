@@ -3,7 +3,7 @@ import { createClient } from '@/lib/auth/supabase/client'
 import { Button } from '@/components/ui/button'
 import React from 'react'
 
-export default function AuthButton() {
+export default function AuthButton({content}: {content?: string}) {
     const supabase = createClient();
     const handleSignIn = async () => {
         await supabase.auth.signInWithOAuth({
@@ -17,7 +17,7 @@ export default function AuthButton() {
 
     return (
         <Button variant='outline' className='shadow-none' onClick={handleSignIn}>
-            Login into Europa
+            {content || 'Login into Europa'}
         </Button>
     )
 }

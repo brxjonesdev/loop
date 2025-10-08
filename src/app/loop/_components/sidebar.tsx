@@ -41,19 +41,6 @@ export function AppSidebar() {
         <SidebarGroup>
             <SidebarGroupContent>
   <SidebarMenu>
-
-    {/* Profile */}
-    <SidebarMenuItem>
-      <SidebarMenuButton
-        asChild
-        className="data-[slot=sidebar-menu-button]:p-3 p-4 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-      >
-        <Link href="/loop/profile" className="flex items-center gap-2">
-          <Globe className="size-4" />
-          <span>Profile</span>
-        </Link>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
     {/* Dashboard */}
     <SidebarMenuItem>
       <SidebarMenuButton
@@ -80,15 +67,28 @@ export function AppSidebar() {
       </SidebarMenuButton>
     </SidebarMenuItem>
 
-    {/* Timeline */}
+    {/* Highlights */}
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
         className="data-[slot=sidebar-menu-button]:p-3 p-4 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
       >
-        <Link href="/loop/timeline" className="flex items-center gap-2">
+        <Link href="/loop/highlights" className="flex items-center gap-2">
           <Star className="size-4" />
-          <span>Timeline</span>
+          <span>Highlights</span>
+        </Link>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+
+    {/* Public Pages */}
+    <SidebarMenuItem>
+      <SidebarMenuButton
+        asChild
+        className="data-[slot=sidebar-menu-button]:p-3 p-4 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+      >
+        <Link href="/loop/pages" className="flex items-center gap-2">
+          <Globe className="size-4" />
+          <span>Public Pages</span>
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>

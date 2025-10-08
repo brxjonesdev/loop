@@ -11,6 +11,18 @@ import {
 
 export default function RecentActivity() {
   return (
-    <div>recent-activity</div>
+      <Card>
+      <CardHeader>
+    <CardTitle>Your Tasks</CardTitle>
+        <CardDescription>Manage your tasks efficiently</CardDescription>
+        <CardAction>View All Tasks</CardAction>
+      </CardHeader>
+      <CardContent>
+        <p>Card Content</p>
+      </CardContent>
+      <CardFooter>
+        <p>Card Footer</p>
+      </CardFooter>
+    </Card>
   )
 }

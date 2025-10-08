@@ -11,7 +11,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider defaultOpen={true} open={true}>
       <AppSidebar />
-      <div className="flex-1 w-full">
+      <div className="flex-1 w-full flex flex-col">
       <MobileSidebar/>
       {children}
       </div>

@@ -49,16 +49,14 @@ const username = "Irene"; // Replace with dynamic username if available
 const user = null
 
   return (
-    <main className="w-full p-6 space-y-10">
+    <main className="w-full p-6 space-y-6 flex flex-col  flex-1 font-title">
       <section className=''>
-        <h1 className="text-lg lg:text-3xl font-bold">Welcome In, {user?.user_metadata.user_name || username}!</h1>
-        <p>What would you like to do today?</p>
+        <h1 className="text-lg lg:text-3xl font-bold">Welcome In, {username}!</h1>
+        <p className='font-body'>What would you like to do today?</p>
       </section>
-      <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <Tasks/>
-        <Projects/>
-        <RecentActivity/>
-
+      <section className='flex-1 flex flex-col lg:flex-row gap-4'>
+        <Tasks />
+        <Projects />
       </section>
     </main>
   )

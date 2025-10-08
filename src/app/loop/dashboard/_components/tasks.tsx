@@ -8,21 +8,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Link from 'next/link'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
+import { CheckCheck, Icon, Receipt } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function Tasks() {
   return (
-    <Card>
+    <Card className='w-full lg:w-4/12 font-title'>
   <CardHeader>
 <CardTitle>Your Tasks</CardTitle>
     <CardDescription>Manage your tasks efficiently</CardDescription>
-    <CardAction>View All Tasks</CardAction>
+    <CardAction className='text-sm font-body hover:underline'>
+      <Link href="/loop/focus">View All</Link>
+    </CardAction>
   </CardHeader>
-  <CardContent>
-    <p>Card Content</p>
+  <CardContent className='flex-1 h-full'>
+    <Empty  className='border border-dashed bg-accent/20 h-full'>
+  <EmptyHeader>
+    <EmptyMedia variant="icon">
+      <CheckCheck/>
+    </EmptyMedia>
+    <EmptyTitle>No tasks are set yet.</EmptyTitle>
+    <EmptyDescription>No tasks found</EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent>
+    <Button>Add a new Task</Button>
+  </EmptyContent>
+</Empty>
   </CardContent>
-  <CardFooter>
-    <p>Card Footer</p>
-  </CardFooter>
 </Card>
   )
 }

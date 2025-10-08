@@ -1,5 +1,8 @@
 import React from 'react'
 import { createClient } from '@/lib/auth/supabase/server';
+import Tasks from './_components/tasks';
+import Projects from './_components/projects';
+import RecentActivity from './_components/recent-activity';
 
 export default async function Dashboard() {
 //   const supabase = await createClient();
@@ -39,7 +42,24 @@ export default async function Dashboard() {
 //   const repos = await getUserRepos();
 //   console.log('Repos:', repos);
 
+
+
+// Tasks, Overview, Recent Activity
+const username = "Irene"; // Replace with dynamic username if available
+const user = null
+
   return (
-    <div className='font-body text-red-500'>Dashboard</div>
+    <main className="w-full p-6 space-y-10">
+      <section className=''>
+        <h1 className="text-lg lg:text-3xl font-bold">Welcome In, {user?.user_metadata.user_name || username}!</h1>
+        <p>What would you like to do today?</p>
+      </section>
+      <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <Tasks/>
+        <Projects/>
+        <RecentActivity/>
+
+      </section>
+    </main>
   )
 }

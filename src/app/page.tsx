@@ -14,11 +14,7 @@ if (user) {
 }
   return (
     <main className="w-full mx-auto px-4 space-y-10  ">
-<<<<<<< HEAD
       <AuthButton content="Login with GitHub" />
-=======
-      
->>>>>>> 883019b9f8b77263622d87f7becd2356fb00753f
     </main>
   );
 }

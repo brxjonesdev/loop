@@ -38,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${nunito.variable} ${nunitoSans.variable} ${inter.variable} ${suse.variable} antialiased flex flex-col min-h-screen `}
+        className={`${nunito.variable} ${nunitoSans.variable} ${inter.variable} ${suse.variable} antialiased flex  min-h-screen `}
       >
         <ThemeProvider
             attribute="class"

@@ -7,12 +7,8 @@ export default function AuthButton() {
     const supabase = createClient();
     const handleSignIn = async () => {
         await supabase.auth.signInWithOAuth({
-            provider: 'google',
+            provider: 'github',
             options: {
-                queryParams: {
-                    access_type: 'offline',
-                    prompt: 'consent',
-                },
                 redirectTo: `${window.location.origin}/api/callback`,
             },
             
